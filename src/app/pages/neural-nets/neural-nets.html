@@ -1,0 +1,21 @@
+<section class="neural-nets">
+  <div class="header">
+    <h1>Neural Net Creatures</h1>
+    <p class="subtitle">Creatures with small neural networks evolve to survive — eating food, reproducing, and competing.</p>
+  </div>
+  <div class="sim-wrap">
+    <iframe src="/neural-nets/index.html" title="Neural Net Creatures Simulation" allowfullscreen></iframe>
+    <p class="hint">[P] pause &nbsp;&nbsp; [+/-] speed &nbsp;&nbsp; [WASD] camera &nbsp;&nbsp; click creature to inspect</p>
+  </div>
+  <div class="cards">
+    <div class="card">
+      <h2>How it works</h2>
+      <p>Each creature is controlled by a small feed-forward neural network. Inputs include nearby food distance, nearby creature distance, current energy level, and the creature's facing angle. Outputs drive forward thrust and turning.</p>
+      <p>When a creature accumulates enough energy it reproduces, passing its weights to an offspring with small random mutations. Over many generations, effective behaviours emerge without any explicit fitness function.</p>
+    </div>
+    <div class="card">
+      <h2>Tech</h2>
+      <p>Written in Go and compiled to WebAssembly using <a href="https://ebitengine.org/" target="_blank" rel="noopener noreferrer">Ebiten</a>, a 2D game engine. The neural network, creature physics, and world simulation all run at 60 TPS inside a single WASM binary with no JavaScript simulation logic.</p>
+    </div>
+  </div>
+</section>
