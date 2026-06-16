@@ -1,0 +1,92 @@
+.about {
+  max-width: 640px;
+  margin: 4rem auto;
+  padding: 0 1.5rem;
+  text-align: center;
+
+  .avatar {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin: 0 auto 1.5rem;
+    display: block;
+  }
+
+  h1 {
+    font-size: 2.25rem;
+    margin: 0 0 0.25rem;
+    color: #1e1e2e;
+  }
+
+  .tagline {
+    color: #6b7280;
+    font-size: 1.1rem;
+    margin: 0 0 1.5rem;
+  }
+
+  .bio {
+    color: #374151;
+    line-height: 1.7;
+    margin-bottom: 2rem;
+  }
+
+  .skills, .contact {
+    text-align: left;
+  }
+
+  .skills {
+    margin-bottom: 2rem;
+
+    h2 {
+      font-size: 1.25rem;
+      border-bottom: 2px solid #6366f1;
+      padding-bottom: 0.25rem;
+      margin-bottom: 0.75rem;
+    }
+  }
+
+  .skills ul {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+
+    li {
+      background: #ede9fe;
+      color: #4c1d95;
+      padding: 0.3rem 0.75rem;
+      border-radius: 999px;
+      font-size: 0.9rem;
+    }
+  }
+
+  .contact {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 2rem;
+
+    h2 {
+      font-size: 1.25rem;
+      border-bottom: 2px solid #6366f1;
+      padding-bottom: 0.25rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .contact-links {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      gap: 0.4rem 1.5rem;
+    }
+
+    a {
+      color: #6366f1;
+      text-decoration: none;
+      font-size: 1rem;
+
+      &:hover { text-decoration: underline; }
+    }
+  }
+}

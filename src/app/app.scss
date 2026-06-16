@@ -1,0 +1,33 @@
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: #f9fafb;
+  color: #111827;
+}
+
+.navbar {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 1rem 2rem;
+  background: #1e1e2e;
+  color: #fff;
+
+  .brand {
+    font-weight: 700;
+    font-size: 1.2rem;
+    flex: 1;
+  }
+
+  a {
+    color: #a5b4fc;
+    text-decoration: none;
+    font-size: 0.95rem;
+
+    &.active, &:hover { color: #fff; }
+  }
+}
+
+main {
+  padding: 1rem 0;
+}
