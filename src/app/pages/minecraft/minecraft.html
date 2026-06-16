@@ -3,6 +3,34 @@
   <p class="subtitle">Join the server and start playing!</p>
 
   <div class="card">
+    <div class="card-header">
+      <h2>Server Status</h2>
+      <button class="refresh-btn" (click)="fetchStatus()" [disabled]="refreshing()" [class.spinning]="refreshing()">↻</button>
+    </div>
+    @if (status() === null) {
+      <p class="status-loading">Checking status…</p>
+    } @else if (status()!.online) {
+      <div class="detail-row">
+        <span class="label">Status</span>
+        <span class="badge online">Online</span>
+      </div>
+      <div class="detail-row">
+        <span class="label">Players</span>
+        <code>{{ status()!.players!.online }} / {{ status()!.players!.max }}</code>
+      </div>
+      <div class="detail-row">
+        <span class="label">Version</span>
+        <code>{{ status()!.version }}</code>
+      </div>
+    } @else {
+      <div class="detail-row">
+        <span class="label">Status</span>
+        <span class="badge offline">Offline</span>
+      </div>
+    }
+  </div>
+
+  <div class="card">
     <h2>Connection Details</h2>
     <div class="detail-row">
       <span class="label">Address</span>
