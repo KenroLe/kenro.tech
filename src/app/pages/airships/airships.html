@@ -1,0 +1,178 @@
+<section class="airships">
+  <h1>&#9992; Modding Airships: Conquer the Skies</h1>
+  <p class="subtitle">Using <strong>Sail</strong> — a Fabric-based modloader for Airships</p>
+
+  <div class="card">
+    <h2>What is Sail?</h2>
+    <p>
+      Sail is a custom Fabric game provider that brings the Fabric modding ecosystem to
+      <em>Airships: Conquer the Skies</em>. It lets you write mods in Java using the same
+      tools as Minecraft modding — <strong>Fabric Loader</strong>, <strong>Mixins</strong>,
+      and the standard <code>ModInitializer</code> API.
+    </p>
+    <p>
+      Under the hood, Sail implements <code>GameProvider</code> so Fabric's Knot launcher
+      can inject bytecode hooks into the game before its main class even runs. Two built-in
+      patches are always applied: one injects the mod initialization lifecycle, and another
+      shows <em>"Modded Fabric"</em> on the main menu.
+    </p>
+  </div>
+
+  <div class="card">
+    <h2>Installation</h2>
+    <ol>
+      <li>Download the latest Sail release (the <code>sail/</code> folder from the GitHub release).</li>
+      <li>
+        Place the following files next to your game JAR:
+        <ul>
+          <li><code>AirshipsGameProvider-1.0.0.jar</code></li>
+          <li><code>fabric-dependencies/</code> — all Fabric runtime JARs</li>
+          <li><code>mods/</code> — drop your mod JARs here</li>
+        </ul>
+      </li>
+      <li>
+        Launch the game with Knot instead of the default entry point:
+        <pre><code>java -Dhttps.protocols=TLSv1.2,TLSv1.1,TLSv1 \
+  -Dfabric.skipMcProvider=true \
+  -Dfabric.side=client \
+  -cp "game.jar:AirshipsGameProvider-1.0.0.jar:fabric-dependencies/*" \
+  net.fabricmc.loader.impl.launch.knot.KnotClient</code></pre>
+      </li>
+    </ol>
+  </div>
+
+  <div class="card">
+    <h2>Creating a Mod</h2>
+    <p>A Sail mod is a standard Fabric mod with a Gradle project. The minimal setup:</p>
+
+    <h3>1. fabric.mod.json</h3>
+    <p>Every mod needs a manifest at <code>src/main/resources/fabric.mod.json</code>:</p>
+    <pre><code>&#123;
+  "schemaVersion": 1,
+  "id": "my-mod",
+  "version": "1.0.0",
+  "name": "My Mod",
+  "description": "Does something cool in Airships",
+  "entrypoints": &#123;
+    "main": ["com.example.MyMod"]
+  &#125;
+&#125;</code></pre>
+
+    <h3>2. Mod initializer</h3>
+    <p>Implement <code>ModInitializer</code> — this runs once when the game loads your mod:</p>
+    <pre><code>public class MyMod implements ModInitializer &#123;
+    &#64;Override
+    public void onInitialize() &#123;
+        System.out.println("My mod loaded!");
+    &#125;
+&#125;</code></pre>
+
+    <h3>3. build.gradle dependency</h3>
+    <pre><code>repositories &#123;
+    maven &#123; url "https://maven.fabricmc.net/" &#125;
+    maven &#123; url "https://jitpack.io" &#125;
+&#125;
+
+dependencies &#123;
+    api "com.github.KenroLe:sail:1.0.0"
+&#125;</code></pre>
+  </div>
+
+  <div class="card">
+    <h2>Demo Mod</h2>
+    <p>
+      The simplest working mod — it logs all loaded mods to the console on startup.
+      A good way to verify that Sail is set up correctly.
+    </p>
+    <pre><code>public class DemoMod implements ModInitializer &#123;
+    &#64;Override
+    public void onInitialize() &#123;
+        Log.info(LogCategory.GENERAL, "Demo Mod loaded! Airships Fabric works!");
+        FabricLoader.getInstance().getAllMods().forEach(mod ->
+            Log.info(LogCategory.GENERAL,
+                "  - " + mod.getMetadata().getId()
+                + " " + mod.getMetadata().getVersion())
+        );
+    &#125;
+&#125;</code></pre>
+  </div>
+
+  <div class="card">
+    <h2>Example: Injured Modules Mod</h2>
+    <p>
+      A real mod that makes damaged lift modules provide less lift proportional to how much
+      HP they have lost. It uses a <strong>Mixin</strong> to inject code into the game's
+      <code>Airship.availableLift()</code> method without touching the original source.
+    </p>
+
+    <h3>mixins.json</h3>
+    <pre><code>&#123;
+  "required": true,
+  "minVersion": "0.8",
+  "package": "com.kenro.injuredmodulesmod.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": ["HpAffectsLiftMixin"]
+&#125;</code></pre>
+
+    <h3>HpAffectsLiftMixin.java</h3>
+    <pre><code>&#64;Mixin(Airship.class)
+public abstract class HpAffectsLiftMixin extends GridBody &#123;
+
+    &#64;Shadow public ArrayList&lt;Module&gt; modules;
+    &#64;Shadow public final BonusSet currentBonuses = null;
+
+    &#64;Inject(
+        at = &#64;At(value = "INVOKE", ordinal = 1, target = "size", shift = At.Shift.AFTER),
+        method = "availableLift(Lcom/zarkonnen/airships/Combat;)I"
+    )
+    public void availableLift(Combat c, CallbackInfoReturnable ci,
+            &#64;Local(ordinal = 0) LocalIntRef result) &#123;
+
+        for (Module m : modules) &#123;
+            if (m.type.hasLift() && m.canRun()) &#123;
+                float damageRatio = 1 - (float) m.hp / m.maxHP;
+                int liftLoss = (int) (m.type.getLift(currentBonuses) * damageRatio);
+                result.set(result.get() - liftLoss);
+            &#125;
+        &#125;
+    &#125;
+&#125;</code></pre>
+    <p>
+      The <code>&#64;Mixin</code> targets <code>Airship</code>, <code>&#64;Inject</code> picks the exact
+      bytecode location inside <code>availableLift</code>, and <code>&#64;Local</code> captures
+      the local variable holding the running lift total so we can reduce it in-place.
+    </p>
+  </div>
+
+  <div class="card">
+    <h2>How Mixins Work</h2>
+    <p>
+      Mixin is a bytecode-weaving framework that lets you inject code into game classes at
+      load time — no decompiling or patching JARs needed. Common injection points:
+    </p>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Annotation</th><th>What it does</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>&#64;Inject</code></td><td>Inject a callback at a specific point in a method</td></tr>
+          <tr><td><code>&#64;Overwrite</code></td><td>Replace a method entirely</td></tr>
+          <tr><td><code>&#64;Redirect</code></td><td>Replace a specific method call inside a method</td></tr>
+          <tr><td><code>&#64;ModifyVariable</code></td><td>Modify a local variable at a specific point</td></tr>
+          <tr><td><code>&#64;Shadow</code></td><td>Reference a field/method from the target class</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Resources</h2>
+    <div class="links">
+      <a href="https://github.com/KenroLe/sail" target="_blank" rel="noopener noreferrer">Sail on GitHub</a>
+      <a href="https://fabricmc.net/wiki/tutorial:introduction" target="_blank" rel="noopener noreferrer">Fabric Wiki</a>
+      <a href="https://github.com/SpongePowered/Mixin" target="_blank" rel="noopener noreferrer">Mixin on GitHub</a>
+      <a href="https://store.steampowered.com/app/342560/Airships_Conquer_the_Skies/" target="_blank" rel="noopener noreferrer">Airships on Steam</a>
+    </div>
+  </div>
+</section>

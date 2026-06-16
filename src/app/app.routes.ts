@@ -1,9 +1,11 @@
 import { Routes } from '@angular/router';
 import { About } from './pages/about/about';
 import { Minecraft } from './pages/minecraft/minecraft';
+import { Airships } from './pages/airships/airships';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'aboutme', pathMatch: 'full' },
   { path: 'aboutme', component: About },
   { path: 'minecraft', component: Minecraft },
+  { path: 'airships', component: Airships },
 ];
