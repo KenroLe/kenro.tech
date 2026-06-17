@@ -3,6 +3,12 @@
   margin: 4rem auto;
   padding: 0 1.5rem;
 
+  @media (max-width: 640px) {
+    margin-top: 2rem;
+    .header h1 { font-size: 1.85rem; }
+    .sim-wrap iframe { height: 70vh; min-height: 360px; }
+  }
+
   .header {
     margin-bottom: 1.5rem;
 

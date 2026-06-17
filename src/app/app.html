@@ -1,11 +1,24 @@
 <nav class="navbar">
   <span class="brand">kenro.tech</span>
-  <a routerLink="/aboutme" routerLinkActive="active">About Me</a>
-  <a routerLink="/minecraft" routerLinkActive="active">Minecraft</a>
-  <a routerLink="/airships" routerLinkActive="active">Airships Mods</a>
-  <a routerLink="/neural-nets" routerLinkActive="active">Neural Nets</a>
-  <a routerLink="/deep-agents" routerLinkActive="active">Deep Agents</a>
-  <a routerLink="/consulting" routerLinkActive="active">Consulting</a>
+
+  <button
+    class="nav-toggle"
+    [class.open]="menuOpen()"
+    (click)="toggleMenu()"
+    aria-label="Toggle navigation"
+    [attr.aria-expanded]="menuOpen()"
+  >
+    <span></span><span></span><span></span>
+  </button>
+
+  <div class="nav-links" [class.open]="menuOpen()">
+    <a routerLink="/aboutme" routerLinkActive="active" (click)="closeMenu()">About Me</a>
+    <a routerLink="/minecraft" routerLinkActive="active" (click)="closeMenu()">Minecraft</a>
+    <a routerLink="/airships" routerLinkActive="active" (click)="closeMenu()">Airships Mods</a>
+    <a routerLink="/neural-nets" routerLinkActive="active" (click)="closeMenu()">Neural Nets</a>
+    <a routerLink="/deep-agents" routerLinkActive="active" (click)="closeMenu()">Deep Agents</a>
+    <a routerLink="/consulting" routerLinkActive="active" (click)="closeMenu()">Consulting</a>
+  </div>
 </nav>
 
 <main>

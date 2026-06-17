@@ -6,6 +6,7 @@ body {
 }
 
 .navbar {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 1.5rem;
@@ -19,12 +20,79 @@ body {
     flex: 1;
   }
 
-  a {
-    color: #a5b4fc;
-    text-decoration: none;
-    font-size: 0.95rem;
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
 
-    &.active, &:hover { color: #fff; }
+    a {
+      color: #a5b4fc;
+      text-decoration: none;
+      font-size: 0.95rem;
+      white-space: nowrap;
+
+      &.active, &:hover { color: #fff; }
+    }
+  }
+
+  // Hamburger — hidden on desktop, shown on mobile
+  .nav-toggle {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5px;
+    width: 2.25rem;
+    height: 2.25rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+
+    span {
+      display: block;
+      width: 1.5rem;
+      height: 2px;
+      background: #fff;
+      border-radius: 2px;
+      transition: transform 0.25s, opacity 0.25s;
+    }
+
+    &.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    &.open span:nth-child(2) { opacity: 0; }
+    &.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+  }
+}
+
+@media (max-width: 768px) {
+  .navbar {
+    padding: 0.85rem 1.25rem;
+
+    .nav-toggle { display: flex; }
+
+    .nav-links {
+      display: none;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 0;
+      background: #1e1e2e;
+      border-top: 1px solid #2a2a3a;
+      z-index: 20;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.25);
+
+      &.open { display: flex; }
+
+      a {
+        padding: 0.9rem 1.25rem;
+        font-size: 1rem;
+        border-bottom: 1px solid #2a2a3a;
+
+        &:last-child { border-bottom: none; }
+      }
+    }
   }
 }
 

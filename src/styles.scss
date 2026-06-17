@@ -1,6 +1,18 @@
 @import '@fontsource/jetbrains-mono/400.css';
 @import '@fontsource/jetbrains-mono/700.css';
 
+html {
+  // Prevent iOS from auto-inflating text in landscape
+  -webkit-text-size-adjust: 100%;
+}
+
 body {
   font-family: 'JetBrains Mono', monospace;
+  // Long unbroken strings (URLs, IDs) wrap instead of forcing horizontal scroll
+  overflow-wrap: break-word;
+}
+
+// Media never overflows its container on small screens
+img, iframe, video, svg, canvas {
+  max-width: 100%;
 }
