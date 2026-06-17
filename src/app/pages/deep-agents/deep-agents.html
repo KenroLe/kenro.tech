@@ -1,0 +1,82 @@
+<section class="deep-agents">
+  <div class="header">
+    <div>
+      <h1>&#x1F916; Deep Agents</h1>
+      <p class="subtitle">Chat with the research agent — it remembers the conversation.</p>
+    </div>
+    <button class="new-chat" (click)="newChat()" [disabled]="running() || !messages().length">
+      New chat
+    </button>
+  </div>
+
+  <div class="toolbar">
+    @if (conversationId(); as id) {
+      <div class="convo-id">
+        <span class="label">Conversation ID</span>
+        <code>{{ id }}</code>
+        <button class="copy" (click)="copyId()" title="Copy ID">
+          {{ copied() ? '✓ copied' : 'copy' }}
+        </button>
+      </div>
+    }
+    <div class="recall">
+      <input
+        type="text"
+        [ngModel]="recallId()"
+        (ngModelChange)="recallId.set($event)"
+        (keydown.enter)="loadConversation()"
+        [disabled]="running()"
+        placeholder="Enter a conversation ID to recall…"
+      />
+      <button class="load-btn" (click)="loadConversation()" [disabled]="running() || !recallId().trim()">
+        Load
+      </button>
+    </div>
+  </div>
+
+  <div class="chat">
+    @for (msg of messages(); track $index) {
+      <div class="msg" [class.user]="msg.role === 'user'" [class.agent]="msg.role === 'agent'">
+        @if (msg.role === 'user') {
+          <div class="bubble">{{ msg.text }}</div>
+        } @else {
+          <div class="bubble">
+            <div class="markdown" [innerHTML]="msg.html"></div>
+            @if (msg.queryType) {
+              <span class="route-badge">routed → {{ msg.queryType }}</span>
+            }
+          </div>
+        }
+      </div>
+    } @empty {
+      <p class="empty">Ask the agent to research something to get started.</p>
+    }
+
+    @if (running()) {
+      <div class="msg agent">
+        <div class="bubble thinking">
+          <span class="spinner"></span>
+          <span>Thinking…</span>
+        </div>
+      </div>
+    }
+
+    @if (error()) {
+      <div class="msg agent">
+        <div class="bubble error">{{ error() }}</div>
+      </div>
+    }
+  </div>
+
+  <div class="composer">
+    <textarea
+      rows="2"
+      [ngModel]="draft()"
+      (ngModelChange)="draft.set($event)"
+      (keydown)="onKeydown($event)"
+      [disabled]="running()"
+      placeholder="Message the agent…  (Enter to send, Shift+Enter for newline)"
+    ></textarea>
+    <button class="send-btn" (click)="send()" [disabled]="running() || !draft().trim()">Send</button>
+  </div>
+</section>
