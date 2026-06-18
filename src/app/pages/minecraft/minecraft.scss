@@ -109,6 +109,25 @@
     font-size: 0.95rem;
   }
 
+  .card-text {
+    color: #374151;
+    margin: 0 0 1rem;
+    line-height: 1.6;
+  }
+
+  .cf-link {
+    display: inline-block;
+    background: #6366f1;
+    color: #fff;
+    font-weight: 600;
+    text-decoration: none;
+    padding: 0.55rem 1.1rem;
+    border-radius: 0.5rem;
+    transition: background 0.2s;
+
+    &:hover { background: #4f46e5; }
+  }
+
   ol {
     padding-left: 1.25rem;
     color: #374151;
@@ -119,5 +138,10 @@
 
     strong { color: #1e1e2e; }
     em { color: #6b7280; }
+
+    a {
+      color: #6366f1;
+      font-weight: 600;
+    }
   }
 }
